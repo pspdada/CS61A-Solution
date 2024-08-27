@@ -1,4 +1,4 @@
-LAB_SOURCE_FILE=__file__
+LAB_SOURCE_FILE = __file__
 
 
 def flatten(s):
@@ -16,6 +16,13 @@ def flatten(s):
     ['m', 'i', 'n', 'm', 'e', 'w', 't', 'a', 't', 'i', 'o', 'n', 's']
     """
     "*** YOUR CODE HERE ***"
+    lst = []
+    for elem in s:
+        if type(elem) == list:
+            lst += flatten(elem)
+        else:  # elem is not a list, which means it can not nestk
+            lst += [elem]
+    return lst
 
 
 def merge(s, t):
@@ -42,6 +49,12 @@ def merge(s, t):
     True
     """
     "*** YOUR CODE HERE ***"
+    if not s or not t:
+        return s + t
+    elif s[0] < t[0]:
+        return [s[0]] + merge(s[1:], t)
+    else:
+        return [t[0]] + merge(s, t[1:])
 
 
 def size_of_tree(t):
@@ -59,9 +72,13 @@ def size_of_tree(t):
     7
     """
     "*** YOUR CODE HERE ***"
+    t_flatten = flatten(t)
+    return len(t_flatten)
+    # Another way
+    # return 1 + sum([size_of_tree(t) for t in branches(t)])
 
 
-def replace_loki_at_leaf(t, lokis_replacement):
+def replace_loki_at_leaf(t, lokis_replacement) -> list:
     """Returns a new tree where every leaf value equal to "loki" has
     been replaced with lokis_replacement.
 
@@ -92,6 +109,13 @@ def replace_loki_at_leaf(t, lokis_replacement):
     """
     "*** YOUR CODE HERE ***"
 
+    if is_leaf(t) and label(t) == "loki":
+        return tree(lokis_replacement)
+    else:
+        return tree(
+            label(t), [replace_loki_at_leaf(b, lokis_replacement) for b in branches(t)]
+        )
+
 
 def divide(quotients, divisors):
     """Return a dictonary in which each quotient q is a key for the list of
@@ -102,25 +126,28 @@ def divide(quotients, divisors):
     >>> divide(range(1, 5), range(20, 25))
     {1: [20, 21, 22, 23, 24], 2: [20, 22, 24], 3: [21, 24], 4: [20, 24]}
     """
-    return {____: ____ for ____ in ____}
-
+    return {x: [y for y in divisors if y % x == 0] for x in quotients}
 
 
 # Tree Data Abstraction
 
+
 def tree(label, branches=[]):
     """Construct a tree with the given label value and a list of branches."""
     for branch in branches:
-        assert is_tree(branch), 'branches must be trees'
+        assert is_tree(branch), "branches must be trees"
     return [label] + list(branches)
+
 
 def label(tree):
     """Return the label value of a tree."""
     return tree[0]
 
+
 def branches(tree):
     """Return the list of branches of the given tree."""
     return tree[1:]
+
 
 def is_tree(tree):
     """Returns True if the given tree is a tree, and False otherwise."""
@@ -131,11 +158,13 @@ def is_tree(tree):
             return False
     return True
 
+
 def is_leaf(tree):
     """Returns True if the given tree's list of branches is empty, and False
     otherwise.
     """
     return not branches(tree)
+
 
 def print_tree(t, indent=0):
     """Print a representation of this tree in which each node is
@@ -156,9 +185,10 @@ def print_tree(t, indent=0):
       6
         7
     """
-    print('  ' * indent + str(label(t)))
+    print("  " * indent + str(label(t)))
     for b in branches(t):
         print_tree(b, indent + 1)
+
 
 def copy_tree(t):
     """Returns a copy of t. Only for testing purposes.
@@ -170,4 +200,3 @@ def copy_tree(t):
     5
     """
     return tree(label(t), [copy_tree(b) for b in branches(t)])
-
