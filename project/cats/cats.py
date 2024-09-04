@@ -207,9 +207,20 @@ def autocorrect(typed_word, word_list, diff_function, limit):
     # BEGIN PROBLEM 5
     "*** YOUR CODE HERE ***"
     # END PROBLEM 5
+    corrected_word, distance = typed_word, 10000
+    for word in word_list:
+        dis = diff_function(typed_word, word, limit)
+        if typed_word == word:
+            return typed_word
+        elif dis > limit:
+            continue
+        elif dis < distance:
+            distance = dis
+            corrected_word = word
+    return corrected_word
 
 
-def furry_fixes(typed, source, limit):
+def furry_fixes(typed, source, limit) -> int:
     """A diff function for autocorrect that determines how many letters
     in TYPED need to be substituted to create SOURCE, then adds the difference in
     their lengths and returns the result.
@@ -231,8 +242,23 @@ def furry_fixes(typed, source, limit):
     >>> furry_fixes("rose", "hello", big_limit)   # Substitute: r->h, o->e, s->l, e->l, length difference of 1.
     5
     """
+
     # BEGIN PROBLEM 6
-    assert False, "Remove this line"
+    def fix(typed, source, now_dist) -> int:
+        if len(typed) == 0:
+            return now_dist + len(source)
+        elif len(source) == 0:
+            return now_dist + len(typed)
+        if typed[0] != source[0]:
+            if now_dist + 1 > limit:
+                return limit + 2
+            return fix(typed[1:], source[1:], now_dist + 1)
+        else:
+            if now_dist > limit:
+                return limit + 2
+            return fix(typed[1:], source[1:], now_dist)
+
+    return fix(typed, source, 0)
     # END PROBLEM 6
 
 
@@ -253,23 +279,20 @@ def minimum_mewtations(typed, source, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    assert False, "Remove this line"
-    if ___________:  # Base cases should go here, you may add more base cases as needed.
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
-    # Recursive cases should go below here
-    if ___________:  # Feel free to remove or add additional cases
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+    if len(typed) == 0:
+        return len(source)
+    if len(source) == 0:
+        return len(typed)
+    if limit < 0:
+        return 100
+    if typed[0] == source[0]:
+        return minimum_mewtations(typed[1:], source[1:], limit)
     else:
-        add = ...  # Fill in these lines
-        remove = ...
-        substitute = ...
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+        add = minimum_mewtations(typed, source[1:], limit - 1) + 1
+        remove = minimum_mewtations(typed[1:], source, limit - 1) + 1
+        substitute = minimum_mewtations(typed[1:], source[1:], limit - 1) + 1
+
+        return min(add, remove, substitute)
 
 
 # Ignore the line below
@@ -290,7 +313,7 @@ FINAL_DIFF_LIMIT = 6  # REPLACE THIS WITH YOUR LIMIT
 ###########
 
 
-def report_progress(typed, source, user_id, upload):
+def report_progress(typed: list[str], source: list[str], user_id, upload):
     """Upload a report of your id and progress so far to the multiplayer server.
     Returns the progress so far.
 
@@ -315,10 +338,17 @@ def report_progress(typed, source, user_id, upload):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    total = len(source)
+    correct, i = 0, 0
+    while i < len(typed) and typed[i] == source[i]:
+        correct += 1
+        i += 1
+    upload({"id": user_id, "progress": correct / total})
+    print(correct / total)
     # END PROBLEM 8
 
 
-def time_per_word(words, timestamps_per_player):
+def time_per_word(words, timestamps_per_player) -> tuple[list, list[list]]:
     """Return two values: the list of words that the players are typing and
     a list of lists that stores the durations it took each player to type each word.
 
@@ -336,9 +366,19 @@ def time_per_word(words, timestamps_per_player):
     >>> times
     [[6, 3, 6, 2], [10, 6, 1, 2]]
     """
-    # BEGIN PROBLEM 9
-    "*** YOUR CODE HERE ***"
-    # END PROBLEM 9
+    times: list[list] = []
+    player_idx = 0
+    while player_idx < len(timestamps_per_player):
+        timestamps = timestamps_per_player[player_idx]
+        t = len(timestamps)
+        if player_idx >= len(times):
+            times.append([])
+        i = 0
+        while i < t - 1:
+            times[player_idx].append(timestamps[i + 1] - timestamps[i])
+            i += 1
+        player_idx += 1
+    return (words, times)
 
 
 def time_per_word_match(words, timestamps_per_player):
@@ -357,9 +397,8 @@ def time_per_word_match(words, timestamps_per_player):
     >>> get_all_times(match_object)
     [[6, 3, 6, 2], [10, 6, 1, 2]]
     """
-    # BEGIN PROBLEM 10
-    "*** YOUR CODE HERE ***"
-    # END PROBLEM 10
+    a, b = time_per_word(words, timestamps_per_player)
+    return match(a, b)
 
 
 def fastest_words(match_object):
@@ -377,15 +416,23 @@ def fastest_words(match_object):
     >>> p1
     [4, 1, 6]
     """
-    player_indices = range(
-        len(get_all_times(match_object))
-    )  # contains an *index* for each player
-    word_indices = range(
-        len(get_all_words(match_object))
-    )  # contains an *index* for each word
-    # BEGIN PROBLEM 11
     "*** YOUR CODE HERE ***"
-    # END PROBLEM 11
+    words = get_all_words(match_object)
+    num_words = len(words)
+    num_players = len(get_all_times(match_object))
+
+    fastest: list[list[str]] = [[] for _ in range(num_players)]
+    word_idx = 0
+    while word_idx < num_words:
+        tmp_player, play_idx, time = 0, 0, 1000
+        while play_idx < num_players:
+            if get_time(match_object, play_idx, word_idx) < time:
+                time = get_time(match_object, play_idx, word_idx)
+                tmp_player = play_idx
+            play_idx += 1
+        fastest[tmp_player].append(words[word_idx])
+        word_idx += 1
+    return fastest
 
 
 def match(words, times):
