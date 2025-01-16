@@ -1,6 +1,6 @@
 # CS61A-Summer2024
 
-My solutions to the labs, homework, and projects auditing the CS61a.
+My solutions to the labs, homework, and projects of the CS61a.
 
 ## Relevent resources
 
