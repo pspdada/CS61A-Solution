@@ -9,19 +9,19 @@ class Tree:
 
     def __repr__(self):
         if self.branches:
-            branch_str = ', ' + repr(self.branches)
+            branch_str = ", " + repr(self.branches)
         else:
-            branch_str = ''
-        return f'Tree({self.label}{branch_str})'
+            branch_str = ""
+        return f"Tree({self.label}{branch_str})"
 
     def __str__(self):
-        return '\n'.join(self.indented())
+        return "\n".join(self.indented())
 
     def indented(self):
         lines = []
         for b in self.branches:
             for line in b.indented():
-                lines.append('  ' + line)
+                lines.append("  " + line)
         return [str(self.label)] + lines
 
     def is_leaf(self):
@@ -63,3 +63,9 @@ def prune(t: Tree, n: int):
     t.branches = [b for b in t.branches if b.label != n]
     for b in t.branches:
         prune(b, n)
+
+
+if __name__ == "__main__":
+    import doctest
+
+    doctest.testmod()

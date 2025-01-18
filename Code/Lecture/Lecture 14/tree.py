@@ -1,3 +1,4 @@
+# Lecture 14: Trees
 def tree(label, branches=[]) -> list:
     for branch in branches:
         assert is_tree(branch), "branches must be trees"
@@ -13,7 +14,7 @@ def branches(tree) -> list:
 
 
 def is_tree(tree) -> bool:
-    if type(tree) != list or len(tree) < 1:
+    if not isinstance(tree, list) or len(tree) < 1:
         return False
     for branch in branches(tree):
         if not is_tree(branch):

@@ -1,3 +1,4 @@
+# Homework 3: Recursion, Tree Recursion
 HW_SOURCE_FILE = __file__
 
 
@@ -234,9 +235,6 @@ def move_stack(n, start, end):
         move_stack(1, start, end)
         move_stack(n - 1, middle, end)
     "*** YOUR CODE HERE ***"
-
-
-from operator import sub, mul
 
 
 def make_anonymous_factorial():

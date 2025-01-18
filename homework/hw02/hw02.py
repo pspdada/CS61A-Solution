@@ -1,10 +1,12 @@
+# Homework 2: Higher-Order Functions
+
 from operator import add, mul
 from typing import Callable
 
-square = lambda x: x * x
-identity = lambda x: x
-triple = lambda x: 3 * x
-increment = lambda x: x + 1
+square = lambda x: x * x  # noqa
+identity = lambda x: x  # noqa
+triple = lambda x: 3 * x  # noqa
+increment = lambda x: x + 1  # noqa
 
 HW_SOURCE_FILE = __file__
 
@@ -109,14 +111,21 @@ def make_repeater(f: Callable[[int], int], n: int):
     """
     "*** YOUR CODE HERE ***"
 
-    def fun(x: int) -> int:
+    def fun_iter(x: int) -> int:
         i, res = 1, x
         while i <= n:
             res = f(res)
             i += 1
         return res
 
-    return fun
+    def fun_recur(x: int) -> int:
+        if n == 0:
+            return x
+        else:
+            return f(make_repeater(f, n - 1)(x))
+
+    # return fun_iter
+    return fun_recur
 
 
 def digit_distance(n):
@@ -242,11 +251,9 @@ def count_coins(total):
             return 1
         elif total < 0:
             return 0
-        if largest_coin == None:
+        if largest_coin is None:
             return 0
-        wo_largest_coin = constrained_count_small(
-            total, next_smaller_coin(largest_coin)
-        )
+        wo_largest_coin = constrained_count_small(total, next_smaller_coin(largest_coin))
         w_largest_coin = constrained_count_small(total - largest_coin, largest_coin)
         return w_largest_coin + wo_largest_coin
 

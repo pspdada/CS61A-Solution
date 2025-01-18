@@ -1,27 +1,28 @@
-from numpy import empty
+# Lecture22: Composition
+from typing import Callable
 
 
 class Link:
     empty = ()
 
-    def __init__(self, first, rest=empty):
+    def __init__(self, first: int, rest: "Link" = empty):
         assert rest is Link.empty or isinstance(rest, Link)
         self.first = first
         self.rest = rest
 
     def __repr__(self):
         if self.rest:
-            rest_repr = ', ' + repr(self.rest)
+            rest_repr = ", " + repr(self.rest)
         else:
-            rest_repr = ''
-        return 'Link(' + repr(self.first) + rest_repr + ')'
+            rest_repr = ""
+        return "Link(" + repr(self.first) + rest_repr + ")"
 
     def __str__(self):
-        string = '<'
+        string = "<"
         while self.rest is not Link.empty:
-            string += str(self.first) + ' '
+            string += str(self.first) + " "
             self = self.rest
-        return string + str(self.first) + '>'
+        return string + str(self.first) + ">"
 
 
 def square(x):
@@ -33,7 +34,9 @@ def odd(x):
 
 
 def range_link(start, end):
-    """Return a Link containing consecutive integers from start to end.
+    """
+    Return a Link containing consecutive integers from start to end.
+
     >>> range_link(3, 6)
     Link(3, Link(4, Link(5)))
     """
@@ -43,7 +46,9 @@ def range_link(start, end):
 
 
 def map_link(f, s):
-    """Return a Link with the elements of s transformed by f.
+    """
+    Return a Link with the elements of s transformed by f.
+
     >>> s = range_link(3, 6)
     >>> map_link(square, s)
     Link(9, Link(16, Link(25)))
@@ -53,9 +58,11 @@ def map_link(f, s):
     return Link(f(s.first), map_link(f, s.rest))
 
 
-def filter_link(f, s):
-    """Return a Link with elements of s for which f(e) is true.
-    >>> s = range_link(3, 8)
+def filter_link(f: Callable, s: Link) -> Link:
+    """
+    Return a Link with elements of s for which f(element) is true.
+
+    >>> s = range_link(3, 8) # 3, 4, 5, 6, 7
     >>> map_link(square, filter_link(odd, s))
     Link(9, Link(25, Link(49)))
     """
@@ -64,7 +71,8 @@ def filter_link(f, s):
     rest = filter_link(f, s.rest)
     if f(s.first):
         return Link(s.first, rest)
-    return rest
+    else:
+        return rest
 
 
 def add(s: Link, v: int) -> Link:
@@ -77,10 +85,16 @@ def add(s: Link, v: int) -> Link:
     >>> add(s, 8)
     Link(0, Link(1, Link(3, Link(4, Link(7, Link(8))))))
     """
-    if s.first > v:
+    if s.first > v:  # Add to the front
         s.first, s.rest = v, Link(s.first, s.rest)  # Remember to construct a new Link object!!!
-    elif s.first < v and s.rest is Link.empty:
+    elif s.first < v and s.rest is Link.empty:  # Add to the end
         s.rest = Link(v)
     elif s.first < v:
         add(s.rest, v)
     return s
+
+
+if __name__ == "__main__":
+    import doctest
+
+    doctest.testmod()

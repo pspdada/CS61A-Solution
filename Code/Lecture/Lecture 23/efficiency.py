@@ -1,5 +1,9 @@
-def count(f):
+# Lecture 23: Efficiency
+import functools
 
+
+def count(f):
+    @functools.wraps(f)
     def counted(n):
         counted.call_count += 1
         return f(n)
@@ -8,19 +12,19 @@ def count(f):
     return counted
 
 
-def memo(f):
+def memorize(f):
     cache = {}
 
     def memorized(n):
         if n not in cache:
-            cache[n] = f(n)
+            cache[n] = f(n)  # call f only if necessary
         return cache[n]
 
     return memorized
 
 
 @count
-@memo
+@memorize
 def fib(n):
     if n == 0 or n == 1:
         return n

@@ -53,5 +53,3 @@ def print_parts(tree, partition=[]):
 partition = partition_tree(2, 2)
 print(partition)
 print_parts(partition)
-
-

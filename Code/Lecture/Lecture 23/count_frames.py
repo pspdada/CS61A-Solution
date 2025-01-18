@@ -1,5 +1,9 @@
-def count_frames(f):
+# Lecture 23: Efficiency
+import functools
 
+
+def count_frames(f):
+    @functools.wraps(f)
     def counted(n):
         counted.open_count += 1
         if counted.open_count > counted.max_count:

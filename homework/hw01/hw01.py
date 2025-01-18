@@ -1,4 +1,6 @@
-from operator import add, sub
+# Homework 1: Functions, Control
+
+from operator import add, sub  # noqa
 
 
 def a_plus_abs_b(a, b):
@@ -14,9 +16,9 @@ def a_plus_abs_b(a, b):
     3
     """
     if b < 0:
-        f = lambda a, b: a - b  # or f = sub
+        f = lambda a, b: a - b  # or f = sub # noqa
     else:
-        f = lambda a, b: a + b  # or f = add
+        f = lambda a, b: a + b  # or f = add # noqa
     return f(a, b)
 
 
@@ -74,7 +76,8 @@ def largest_factor(n):
             largest = i
     return largest
 
-    # or
+    # Alternative solution
+
     # factor = n - 1
     # while factor > 0:
     #     if n % factor == 0:
@@ -83,8 +86,11 @@ def largest_factor(n):
 
 
 def hailstone(n):
-    """Print the hailstone sequence starting at n and return its
-    length.
+    """Print the hailstone sequence starting at n and return its length.
+    Pick a positive integer n as the start.
+    If n is even, divide it by 2.
+    If n is odd, multiply it by 3 and add 1.
+    Continue this process until n is 1.
 
     >>> a = hailstone(10)
     10
