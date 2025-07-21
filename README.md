@@ -1,8 +1,13 @@
-# CS61A-Summer2024
+<div align="center">
+
+# CS61A-Solution
+
+CS 61A: Structure and Interpretation of Computer Programs
+</div>
 
 This repo collects my solutions to the labs, homework, and projects of the [UC Berkeley CS61A, Summer 2024](https://cs61a.org/) course.
 
-## Relevent resources
+## Relevant resources
 
 ### CS61a
 
